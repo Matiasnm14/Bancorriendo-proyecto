@@ -1,0 +1,35 @@
+package Servicios;
+
+public class Deudas {
+    String mes;
+    double monto;
+
+    public Deudas(double monto, String mes) {
+        this.mes = mes;
+        this.monto = monto;
+    }
+
+    public String getMes() {
+        return mes;
+    }
+
+    public void setMes(String mes) {
+        this.mes = mes;
+    }
+
+    public double getMonto() {
+        return monto;
+    }
+
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    @Override
+    public String toString() {
+        return "Deudas{" +
+                "mes='" + mes + '\'' +
+                ", monto=" + monto +
+                '}';
+    }
+}
