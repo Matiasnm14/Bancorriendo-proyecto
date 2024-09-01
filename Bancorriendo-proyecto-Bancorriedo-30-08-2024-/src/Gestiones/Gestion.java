@@ -199,6 +199,7 @@ public class Gestion {
                                 }while (!opcion3.equals("0")&&!opcion3.equals("1")&&!opcion3.equals("2")&&!opcion3.equals("3"));
                                 break;
                             case "3":
+                                pagarColegiatura();
                                 break;
                             case "0":
                                 System.out.println("Volviendo al menu...");
@@ -221,7 +222,7 @@ public class Gestion {
                         }catch (Exception e){
                             pase = true;
                             try{
-                                throw new MiException("Ingrese un numero de tarjetavalido");
+                                throw new MiException("Ingrese un numero de tarjeta valido");
                             }catch (Exception E){
                                 String k = teclado.nextLine();
                                 E.printStackTrace();
@@ -593,5 +594,72 @@ public class Gestion {
             System.out.println("No hay cuentas!");
         }
     }
+    public void pagarColegiatura(){
+        String opcion;
+        String numeroDeCuenta = "na";
+        boolean pase = false;
+        String codigo= "na";
+        Date fecha = new Date();
+        if(listarCuentas()){
 
+            do {
+                try {
+                    pase = false;
+                    System.out.print("Escriba el numero de cuenta que utilizara: ");
+                    numeroDeCuenta = teclado.nextLine();
+                    int codigoP = Integer.parseInt(numeroDeCuenta);
+                } catch (Exception e) {
+                    pase = true;
+                    System.out.println("Ingrese un numero valido!");
+                }
+            }while (pase);
+            do {
+                try {
+                    pase = false;
+                    System.out.print("Escriba codigo del estudiante: ");
+                    codigo = teclado.nextLine();
+                    int codigoP = Integer.parseInt(codigo);
+                } catch (Exception e) {
+                    pase = true;
+                    System.out.println("Ingrese un numero valido!");
+                }
+            }while (pase);
+
+            for (int i = 0; i < t.colegiaturas.length; i++) {
+                if(t.colegiaturas[i].getCodigo().equals(codigo)){
+                    for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
+                        if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equals(numeroDeCuenta)){
+                            do{
+                                System.out.println("La deuda del estudiante es de: "+ t.colegiaturas[i].getDeuda()+"bs");
+                                System.out.println("Desea pagarlo?");
+                                System.out.println("1) Si");
+                                System.out.println("2) No");
+                                opcion = teclado.nextLine();
+                                switch (opcion){
+                                    case "1":
+                                        if(clientes[numeroCliente].getCuentas()[j].isMoneda()){
+                                            clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda()/ 6.91);
+                                            t.colegiaturas[i].setDeuda(0);
+                                            crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
+                                        }else{
+                                            if(!clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda())){
+                                                crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
+                                                t.colegiaturas[i].setDeuda(0);
+                                            }
+                                        }
+                                        break;
+                                    case "2":
+                                        System.out.println("Volviendo al menu...");
+                                        break;
+                                    default:
+                                        System.out.println("Escriba una opcion valida!");
+                                        break;
+                                }
+                            }while (!opcion.equalsIgnoreCase("1")&&!opcion.equalsIgnoreCase("2"));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

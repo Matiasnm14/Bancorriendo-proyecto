@@ -51,15 +51,33 @@ public class Cuenta {
             System.out.println("Escoge un monto valido!");
         }
     }
-    public void debitar(double monto) {
-        if (monto > 0) {
-            this.saldo -= monto;
+    public boolean debitar(double monto) {
+        if(tipoCuenta){
+            if (monto > 0) {
+                this.saldo -= monto;
+            }else{
+                System.out.println("Escoge un monto valido!");
+            }
         }else{
-            System.out.println("Escoge un monto valido!");
+            if(saldo < monto){
+                System.out.println("Saldo insuficiente!");
+                return false;
+            }else{
+                if (monto > 0) {
+                    this.saldo -= monto;
+                }else{
+                    System.out.println("Escoge un monto valido!");
+                }
+            }
         }
+        return true;
     }
 
     public double getSaldo() {
         return saldo;
+    }
+
+    public boolean isMoneda() {
+        return moneda;
     }
 }
