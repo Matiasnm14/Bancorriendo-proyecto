@@ -3,7 +3,7 @@ import Clientes.Beneficiario;
 import Clientes.Cliente;
 import Cuentas.Cuenta;
 import Cuentas.Transaccion;
-import com.sun.security.jgss.GSSUtil;
+import Servicios.*;
 
 import java.util.Date;
 import java.util.Scanner;
@@ -11,9 +11,10 @@ import java.util.Scanner;
 public class Gestion {
     Cliente[] clientes = new Cliente[100];
     Scanner teclado = new Scanner(System.in);
-    Cuenta cuenta = new Cuenta();
+    Transferiencia t = new Transferiencia();
     int numeroCliente;
     int numeroTarjeta = 4000;
+    Date date = new Date();
     public static boolean validarCarnet(String ci){return ci.matches("^[1-9][0-9]*$") && ci.length() ==7;}
     public static boolean validarPassword(String pin) {return pin.matches("^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_+&*-]+$") && pin.length() >= 8 && !pin.contains(" ");}
     public void registrarNuevoCliente(){
@@ -62,6 +63,7 @@ public class Gestion {
         String passsword;
         int intentos=3;
         String opcion;
+
         do{
             try{
                 pase = false;
@@ -130,6 +132,7 @@ public class Gestion {
     public void menu(){
         String opcion;
         String opcion1;
+        String opcion3;
         String numeroCuenta = "na";
         boolean pase = false;
         int numeroCuentaP;
@@ -170,6 +173,30 @@ public class Gestion {
                             case "1":
                                 break;
                             case "2":
+                                do {
+                                    System.out.println("1) Luz");
+                                    System.out.println("2) Agua");
+                                    System.out.println("3) Telecomuinicaciones");
+                                    System.out.println("0) Volver");
+                                    opcion3 = teclado.nextLine();
+                                    switch (opcion3){
+                                        case "1":
+                                            pagarDeudas(t.luz, "numero de medidor", "CREE");
+                                            break;
+                                        case "2":
+                                            pagarDeudas(t.agua, "numero de medidor", "SAGUAPAC");
+                                            break;
+                                        case "3":
+                                            pagarDeudas(t.tele, "numero de celular", "TIGO");
+                                            break;
+                                        case "0":
+                                            System.out.println("Volviendo...");
+                                            break;
+                                        default:
+                                            System.out.println("Seleccion no valida!");
+                                            break;
+                                    }
+                                }while (!opcion3.equals("0")&&!opcion3.equals("1")&&!opcion3.equals("2")&&!opcion3.equals("3"));
                                 break;
                             case "3":
                                 break;
@@ -321,7 +348,7 @@ public class Gestion {
             System.out.println("No hay extractos!");
         }
     }
-    public void listarCuentas(){
+    public boolean listarCuentas(){
         int contador=0;
         for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
             if(clientes[numeroCliente].getCuentas()[i]!=null){
@@ -331,7 +358,9 @@ public class Gestion {
         }
         if(contador == 0){
             System.out.println("No hay cuentas!");
+            return false;
         }
+        return true;
     }
     public void crearBeneficiarios(){
         String nombreCompleto = "na";
@@ -473,4 +502,96 @@ public class Gestion {
             System.out.println("No hay cuentas de Debito!");
         }
     }
+    public void pagarDeudas(Servicio[] servicios, String mensaje, String mensaje1){
+        int posicion;
+        System.out.print("Ingrese "+mensaje+":");
+        boolean pase;
+        String codigo="na";
+        do {
+            try {
+                pase = false;
+                codigo = teclado.nextLine();
+                int codigoP = Integer.parseInt(codigo);
+            } catch (Exception e) {
+                pase = true;
+                System.out.println("Ingrese un numero valido!");
+            }
+        }while (pase);
+        boolean pase1 = true;
+        for (int i = 0; i < servicios.length; i++) {
+            if (servicios[i].getCodigo().equals(codigo)){
+                posicion = i;
+                System.out.println(servicios[i].getDeudas()[0]);
+                pase1 = true;
+                String opcion;
+                do {
+                    System.out.println("Desea pagar la deuda? ");
+                    System.out.println("1) Si");
+                    System.out.println("2) No");
+                    opcion = teclado.nextLine();
+                    switch (opcion){
+                        case "1":
+                            pagarSi(servicios, posicion, mensaje1);
+                            break;
+                        case "2":
+                            System.out.println("OK");
+                            break;
+                        default:
+                            System.out.println("Seleccione una opcion valida!");
+                            break;
+                    }
+                }while (!opcion.equalsIgnoreCase("2")&&!opcion.equalsIgnoreCase("1"));
+                break;
+            } else {
+                pase1 = false;
+            }
+        }
+        if (!pase1){
+            System.out.println("No se encontró lo que buscabas");
+        }
+    }
+    public void pagarSi(Servicio[] servicios, int posicion, String mensaje){
+        listarCuentas();
+        boolean pase;
+        String numeroDeCuenta = "na";
+        int numeroCuentaP;
+        Date fecha = new Date();
+        if(listarCuentas()){
+            do{
+                try{
+                    pase = false;
+                    System.out.println("Ingrese numero de cuenta: ");
+                    numeroDeCuenta = teclado.nextLine();
+                    numeroCuentaP = Integer.parseInt(numeroDeCuenta);
+                }catch (Exception e){
+                    pase = true;
+                    try{
+                        throw new MiException("Ingrese un numero de cuenta valido!");
+                    }catch (Exception E){
+                        E.printStackTrace();
+                        String k = teclado.nextLine();
+                    }
+                }
+            }while (pase);
+            for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
+                if (clientes[numeroCliente].getCuentas()[i] != null){
+                    if (clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta().equalsIgnoreCase(numeroDeCuenta)){
+                        if(clientes[numeroCliente].getCuentas()[i].isTipoCuenta()){
+                            clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto());
+                        }else{
+                            if(clientes[numeroCliente].getCuentas()[i].getSaldo() < servicios[posicion].getDeudas()[0].getMonto()){
+                                System.out.println("Saldo insuficiente!");
+                            }else{
+                                clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto());
+                                crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto(), fecha, i);
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            System.out.println("No hay cuentas!");
+        }
+    }
+
 }
