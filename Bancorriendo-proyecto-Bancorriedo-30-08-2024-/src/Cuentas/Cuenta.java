@@ -72,8 +72,14 @@ public class Cuenta {
         }
         return true;
     }
-    public void pagarDeuda(double deuda){
-        this.saldo += deuda;
+    public boolean pagarDeuda(double deuda){
+        if(deuda > this.saldo){
+            System.out.println("Saldo insuficiente!");
+            return false;
+        }else{
+            this.saldo += deuda;
+        }
+        return true;
     }
 
     public double getSaldo() {
