@@ -47,8 +47,6 @@ public class Cuenta {
     public void abonar(double saldo) {
         if (saldo > 0) {
             this.saldo += saldo;
-        }else{
-            System.out.println("Escoge un monto valido!");
         }
     }
     public boolean debitar(double monto) {
