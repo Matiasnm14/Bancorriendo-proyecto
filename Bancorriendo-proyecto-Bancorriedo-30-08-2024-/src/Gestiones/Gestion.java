@@ -743,8 +743,23 @@ public class Gestion {
                             if(clientes[numeroCliente].getCuentas()[j]!=null){
                                 if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equalsIgnoreCase(numeroCuentaD)){
                                     posicionDebito = j;
-                                    clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo());
-                                    clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                    if(clientes[numeroCliente].getCuentas()[posicionCredito].isMoneda()){
+                                        if(clientes[numeroCliente].getCuentas()[posicionDebito].isMoneda()){
+                                            clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo());
+                                            clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                        }else{
+                                            clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo()*6.91);
+                                            clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                        }
+                                    }else{
+                                        if(clientes[numeroCliente].getCuentas()[posicionDebito].isMoneda()){
+                                            clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo()/6.91);
+                                            clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                        }else{
+                                            clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo());
+                                            clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                        }
+                                    }
                                     break;
                                 }else{
                                     System.out.println("Numero de cuenta no valido!");
