@@ -9,7 +9,7 @@ public class Principal {
         Gestion g = new Gestion();
         Principal p = new Principal();
         Transferiencia t = new Transferiencia();
-        t.contruccionArreglosServicios();
+        g.crearListas();
         String opcion;
          do{
              System.out.println("1) Iniciar Sesion");

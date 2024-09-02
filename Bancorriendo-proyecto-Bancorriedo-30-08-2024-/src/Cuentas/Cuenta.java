@@ -72,6 +72,9 @@ public class Cuenta {
         }
         return true;
     }
+    public void pagarDeuda(double deuda){
+        this.saldo += deuda;
+    }
 
     public double getSaldo() {
         return saldo;
@@ -80,4 +83,9 @@ public class Cuenta {
     public boolean isMoneda() {
         return moneda;
     }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
 }

@@ -17,6 +17,28 @@ public class Gestion {
     Date date = new Date();
     public static boolean validarCarnet(String ci){return ci.matches("^[1-9][0-9]*$") && ci.length() ==7;}
     public static boolean validarPassword(String pin) {return pin.matches("^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_+&*-]+$") && pin.length() >= 8 && !pin.contains(" ");}
+    public void crearListas(){
+        t.getLuz()[0] = new Servicio("1");
+        t.getLuz()[0].getDeudas()[0] = new Deudas(123,"Junio");
+        t.getLuz()[1] = new Servicio("2");
+        t.getLuz()[1].getDeudas()[0] = new Deudas(103, "Julio");
+        t.getLuz()[2] = new Servicio("1");
+        t.getLuz()[2].getDeudas()[0] = new Deudas(123,"Agosto");
+
+        t.getAgua()[0] = new Servicio("1");
+        t.getAgua()[0].getDeudas()[0] = new Deudas(210,"Junio");
+        t.getAgua()[1] = new Servicio("2");
+        t.getAgua()[1].getDeudas()[0] = new Deudas(123,"Julio");
+
+        t.getTele()[0] = new Servicio("73456234");
+        t.getTele()[0].getDeudas()[0] = new Deudas(90,"Junio");
+        t.getTele()[1] = new Servicio("78234542");
+        t.getTele()[1].getDeudas()[0] = new Deudas(100, "Julio");
+
+        t.getColegiaturas()[0] = new Colegiatura("86308", 1500);
+        t.getColegiaturas()[1] = new Colegiatura("86003", 1700);
+        t.getColegiaturas()[2] = new Colegiatura("86430", 1890);
+    }
     public void registrarNuevoCliente(){
         String nombre;
         String ci ;
@@ -171,6 +193,7 @@ public class Gestion {
                         opcion1 = teclado.nextLine();
                         switch (opcion1){
                             case "1":
+                                pagaTarjetasCredito();
                                 break;
                             case "2":
                                 do {
@@ -628,38 +651,114 @@ public class Gestion {
             for (int i = 0; i < t.colegiaturas.length; i++) {
                 if(t.colegiaturas[i].getCodigo().equals(codigo)){
                     for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
-                        if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equals(numeroDeCuenta)){
-                            do{
-                                System.out.println("La deuda del estudiante es de: "+ t.colegiaturas[i].getDeuda()+"bs");
-                                System.out.println("Desea pagarlo?");
-                                System.out.println("1) Si");
-                                System.out.println("2) No");
-                                opcion = teclado.nextLine();
-                                switch (opcion){
-                                    case "1":
-                                        if(clientes[numeroCliente].getCuentas()[j].isMoneda()){
-                                            clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda()/ 6.91);
-                                            t.colegiaturas[i].setDeuda(0);
-                                            crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
-                                        }else{
-                                            if(!clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda())){
-                                                crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
-                                                t.colegiaturas[i].setDeuda(0);
-                                            }
+                            if(clientes[numeroCliente].getCuentas()[j]!=null){
+                                if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equals(numeroDeCuenta)){
+                                    do{
+                                        System.out.println("La deuda del estudiante es de: "+ t.colegiaturas[i].getDeuda()+"bs");
+                                        System.out.println("Desea pagarlo?");
+                                        System.out.println("1) Si");
+                                        System.out.println("2) No");
+                                        opcion = teclado.nextLine();
+                                        switch (opcion){
+                                            case "1":
+                                                if(clientes[numeroCliente].getCuentas()[j].isMoneda()){
+                                                    clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda()/ 6.91);
+                                                    t.colegiaturas[i].setDeuda(0);
+                                                    crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
+                                                }else{
+                                                    if(clientes[numeroCliente].getCuentas()[j].debitar(t.colegiaturas[i].getDeuda())){
+                                                        crearExtracto("UPB", clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta(),t.colegiaturas[i].getDeuda(), fecha, j);
+                                                        t.colegiaturas[i].setDeuda(0);
+                                                    }
+                                                }
+                                                break;
+                                            case "2":
+                                                System.out.println("Volviendo al menu...");
+                                                break;
+                                            default:
+                                                System.out.println("Escriba una opcion valida!");
+                                                break;
                                         }
-                                        break;
-                                    case "2":
-                                        System.out.println("Volviendo al menu...");
-                                        break;
-                                    default:
-                                        System.out.println("Escriba una opcion valida!");
-                                        break;
-                                }
-                            }while (!opcion.equalsIgnoreCase("1")&&!opcion.equalsIgnoreCase("2"));
+                                    }while (!opcion.equalsIgnoreCase("1")&&!opcion.equalsIgnoreCase("2"));
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+    public void pagaTarjetasCredito(){
+        int contador = 0;
+        int contador1 = 0;
+        int posicionCredito = -1;
+        int posicionDebito = -1;
+        String numeroCuentaC = "na";
+        String numeroCuentaD = "na";
+        boolean pase;
+        for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
+            if(clientes[numeroCliente].getCuentas()[i]!=null){
+                if(clientes[numeroCliente].getCuentas()[i].isTipoCuenta()){
+                    System.out.println(clientes[numeroCliente].getCuentas()[i]);
+                    contador++;
+                }else{
+                    contador1++;
+                }
+            }
+        }
+        if(contador!=0&&contador1!=0){
+            do {
+                try {
+                    pase = false;
+                    System.out.print("Ingrese numero de cuenta de Credito que desea pagar: ");
+                    numeroCuentaC = teclado.nextLine();
+                    int k = Integer.parseInt(numeroCuentaC);
+                } catch (Exception e) {
+                    pase = true;
+                    System.out.println("Ingrese un numero valido!");
+                }
+            }while (pase);
+            for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
+                if(clientes[numeroCliente].getCuentas()[i]!=null){
+                    if(clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta().equalsIgnoreCase(numeroCuentaC)){
+                        posicionCredito = i;
+                        for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
+                            if(clientes[numeroCliente].getCuentas()[j]!=null){
+                                if(!clientes[numeroCliente].getCuentas()[j].isTipoCuenta()){
+                                    System.out.println(clientes[numeroCliente].getCuentas()[j]);
+                                }
+                            }
+                        }
+                        do {
+                            try {
+                                pase = false;
+                                System.out.print("Ingrese numero de cuenta de Debito con la que desea pagar: ");
+                                numeroCuentaD = teclado.nextLine();
+                                int k = Integer.parseInt(numeroCuentaD);
+                            } catch (Exception e) {
+                                pase = true;
+                                System.out.println("Ingrese un numero valido!");
+                            }
+                        }while (pase);
+                        for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
+                            if(clientes[numeroCliente].getCuentas()[j]!=null){
+                                if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equalsIgnoreCase(numeroCuentaD)){
+                                    posicionDebito = j;
+                                    clientes[numeroCliente].getCuentas()[posicionDebito].pagarDeuda(clientes[numeroCliente].getCuentas()[posicionCredito].getSaldo());
+                                    clientes[numeroCliente].getCuentas()[posicionCredito].setSaldo(0);
+                                    break;
+                                }else{
+                                    System.out.println("Numero de cuenta no valido!");
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+
+        }else{
+            System.out.println("No hay tarjetas de credito y debito");
         }
     }
 }
