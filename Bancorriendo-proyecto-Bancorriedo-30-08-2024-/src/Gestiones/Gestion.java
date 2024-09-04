@@ -527,23 +527,28 @@ public class Gestion {
             for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
                 if(clientes[numeroCliente].getCuentas()[i]!=null){
                     if(clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta().equals(numeroDeCuenta)){
-                        do{
-                            try {
-                                pase1 = false;
-                                System.out.print("Monto para abonar: ");
-                                montoP = teclado.nextLine();
-                                monto = Double.parseDouble(montoP);
-                            }catch (Exception e){
-                                pase1 = true;
-                                try{throw new MiException("Ingrese un monto valido!");
-                                }catch (Exception E){
-                                    E.printStackTrace();
-                                    String k = teclado.nextLine();
+                        if(!clientes[numeroCliente].getCuentas()[i].isTipoCuenta()){
+                            do{
+                                try {
+                                    pase1 = false;
+                                    System.out.print("Monto para abonar: ");
+                                    montoP = teclado.nextLine();
+                                    monto = Double.parseDouble(montoP);
+                                }catch (Exception e){
+                                    pase1 = true;
+                                    try{throw new MiException("Ingrese un monto valido!");
+                                    }catch (Exception E){
+                                        E.printStackTrace();
+                                        String k = teclado.nextLine();
+                                    }
                                 }
-                            }
-                        }while (pase1);
-                        clientes[numeroCliente].getCuentas()[i].abonar(monto);
-                        break;
+                            }while (pase1);
+                            clientes[numeroCliente].getCuentas()[i].abonar(monto);
+                            break;
+                        }else{
+                            System.out.println("No puedes abonar a cuentas de credito!");
+                        }
+
                     }
                 }
             }
@@ -928,6 +933,7 @@ public class Gestion {
         int poscionCuentaAbonado = -1;
         double monto = -1;
         Date fecha = new Date();
+        int contador1 = 0;
 
         for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
             if(clientes[numeroCliente].getCuentas()[i]!=null){
@@ -959,35 +965,37 @@ public class Gestion {
                 if(clientes[numeroCliente].getBeneficiarios()[i]!=null){
                     if(clientes[numeroCliente].getBeneficiarios()[i].isCliente()){
                         System.out.println(clientes[numeroCliente].getBeneficiarios()[i]);
+                        contador1++;
                     }
                 }
             }
-            do {
-                try {
-                    pase = false;
-                    System.out.print("Ingrese numero de cuenta a abonar: ");
-                    numeroCuentaA = teclado.nextLine();
-                    int k = Integer.parseInt(numeroCuentaA);
-                } catch (Exception e) {
-                    pase = true;
-                    System.out.println("Ingrese un numero valido!");
-                }
-            }while (pase);
-            if(!numeroCuentaD.equals(numeroCuentaA)){
-                for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
-                    if(clientes[numeroCliente].getCuentas()[i]!=null){
-                        if(clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta().equals(numeroCuentaA)){
-                            System.out.println("No te puede transefir a ti mismo en esta opcion!");
-                        }else{
-                            for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
-                                if(clientes[numeroCliente].getCuentas()[j]!=null){
-                                    if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equals(numeroCuentaD)){
-                                        posicionD = j;
+            if(contador1 != 0){
+                do {
+                    try {
+                        pase = false;
+                        System.out.print("Ingrese numero de cuenta a abonar: ");
+                        numeroCuentaA = teclado.nextLine();
+                        int k = Integer.parseInt(numeroCuentaA);
+                    } catch (Exception e) {
+                        pase = true;
+                        System.out.println("Ingrese un numero valido!");
+                    }
+                }while (pase);
+                if(!numeroCuentaD.equals(numeroCuentaA)){
+                    for (int i = 0; i < clientes[numeroCliente].getCuentas().length; i++) {
+                        if(clientes[numeroCliente].getCuentas()[i]!=null){
+                            if(clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta().equals(numeroCuentaA)){
+                                System.out.println("No te puede transefir a ti mismo en esta opcion!");
+                            }else{
+                                for (int j = 0; j < clientes[numeroCliente].getCuentas().length; j++) {
+                                    if(clientes[numeroCliente].getCuentas()[j]!=null){
+                                        if(clientes[numeroCliente].getCuentas()[j].getNumeroDeCuenta().equals(numeroCuentaD)){
+                                            posicionD = j;
+                                        }
                                     }
-                                }
-                            }for (int j = 0; j < clientes.length; j++) {
-                                if(clientes[j] != null){
-                                    for (int k = 0; k < clientes[j].getCuentas().length; k++) {
+                                }for (int j = 0; j < clientes.length; j++) {
+                                    if(clientes[j] != null){
+                                        for (int k = 0; k < clientes[j].getCuentas().length; k++) {
                                             if(clientes[j].getCuentas()[k]!=null){
                                                 if(clientes[j].getCuentas()[k].getNumeroDeCuenta().equals(numeroCuentaA)){
                                                     posicionA = j;
@@ -995,48 +1003,50 @@ public class Gestion {
                                                 }
                                             }
 
+                                        }
                                     }
                                 }
-                            }
 
-                            do {
-                                try {
-                                    pase = false;
-                                    System.out.print("Ingrese monto a transferir: ");
-                                    String montoP = teclado.nextLine();
-                                    monto = Double.parseDouble(montoP);
-                                } catch (Exception e) {
-                                    pase = true;
-                                    System.out.println("Ingrese un numero valido!");
-                                }
-                            }while (pase);
+                                do {
+                                    try {
+                                        pase = false;
+                                        System.out.print("Ingrese monto a transferir: ");
+                                        String montoP = teclado.nextLine();
+                                        monto = Double.parseDouble(montoP);
+                                    } catch (Exception e) {
+                                        pase = true;
+                                        System.out.println("Ingrese un numero valido!");
+                                    }
+                                }while (pase);
 
-                            if(clientes[numeroCliente].getCuentas()[posicionD].isMoneda()){
-                                if(clientes[posicionA].getCuentas()[poscionCuentaAbonado].isMoneda()){
-                                    clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
-                                    clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto);
-                                    crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                if(clientes[numeroCliente].getCuentas()[posicionD].isMoneda()){
+                                    if(clientes[posicionA].getCuentas()[poscionCuentaAbonado].isMoneda()){
+                                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                                        clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto);
+                                        crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                    }else{
+                                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                                        clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto*6.91);
+                                        crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                    }
                                 }else{
-                                    clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
-                                    clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto*6.91);
-                                    crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
-                                }
-                            }else{
-                                if(clientes[posicionA].getCuentas()[poscionCuentaAbonado].isMoneda()){
-                                    clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
-                                    clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto/6.91);
-                                    crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
-                                }else{
-                                    clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
-                                    clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto);
-                                    crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                    if(clientes[posicionA].getCuentas()[poscionCuentaAbonado].isMoneda()){
+                                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                                        clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto/6.91);
+                                        crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                    }else{
+                                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                                        clientes[posicionA].getCuentas()[poscionCuentaAbonado].abonar(monto);
+                                        crearExtractoParaClientes(clientes[posicionA].getCuentas()[poscionCuentaAbonado].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto, fecha, posicionA, posicionD, poscionCuentaAbonado );
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
+                }
             }
+
 
         }else{
             System.out.println("No hay cuentas de debito!");
