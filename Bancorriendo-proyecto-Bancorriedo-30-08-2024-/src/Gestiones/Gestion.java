@@ -609,6 +609,7 @@ public class Gestion {
         String numeroDeCuenta = "na";
         int numeroCuentaP;
         Date fecha = new Date();
+        boolean pase1 = false;
         if(listarCuentas()){
             do{
                 try{
@@ -632,20 +633,24 @@ public class Gestion {
                         if(clientes[numeroCliente].getCuentas()[i].isTipoCuenta()){
                             if(clientes[numeroCliente].getCuentas()[i].isMoneda()){
                                 clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto()/6.91);
+                                pase1 = true;
                                 crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto()/6.91, fecha, i);
                             }else{
                                 clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto());
+                                pase1 = true;
                                 crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto(), fecha, i);
                             }
                         }else{
                             if(clientes[numeroCliente].getCuentas()[i].isMoneda()){
                                 if(clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto()/6.91)){
                                     System.out.println("Servicio pagado!");
+                                    pase1 = true;
                                     crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto()/ 6.91, fecha, i);
                                 }
                             }else{
                                 if(clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto())){
                                     System.out.println("Servicio pagado!");
+                                    pase1 = true;
                                     crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto(), fecha, i);
                                 }
                             }
@@ -653,6 +658,9 @@ public class Gestion {
                         }
                     }
                 }
+            }
+            if(!pase1){
+                System.out.println("Numero de cuenta no reconocido!");
             }
         }else{
             System.out.println("No hay cuentas!");
