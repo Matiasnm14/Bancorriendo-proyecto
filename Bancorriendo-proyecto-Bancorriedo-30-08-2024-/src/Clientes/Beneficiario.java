@@ -19,6 +19,10 @@ public class Beneficiario {
         return cliente;
     }
 
+    public String getNumeroDeCuenta() {
+        return numeroDeCuenta;
+    }
+
     @Override
     public String toString() {
         return "Beneficiario{" +
