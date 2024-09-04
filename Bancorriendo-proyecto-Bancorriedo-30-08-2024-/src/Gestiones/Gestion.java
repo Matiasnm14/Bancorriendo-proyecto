@@ -22,7 +22,7 @@ public class Gestion {
         t.getLuz()[0].getDeudas()[0] = new Deudas(123,"Junio");
         t.getLuz()[1] = new Servicio("2");
         t.getLuz()[1].getDeudas()[0] = new Deudas(103, "Julio");
-        t.getLuz()[2] = new Servicio("1");
+        t.getLuz()[2] = new Servicio("3");
         t.getLuz()[2].getDeudas()[0] = new Deudas(123,"Agosto");
 
         t.getAgua()[0] = new Servicio("1");
@@ -605,7 +605,6 @@ public class Gestion {
         }
     }
     public void pagarSi(Servicio[] servicios, int posicion, String mensaje){
-        listarCuentas();
         boolean pase;
         String numeroDeCuenta = "na";
         int numeroCuentaP;
@@ -901,14 +900,14 @@ public class Gestion {
                         clientes[numeroCliente].getCuentas()[posicionA].abonar(monto);
                         crearExtractoParaClientes(clientes[numeroCliente].getCuentas()[posicionA].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto,fecha, numeroCliente, posicionD,posicionA);
                     }else{
-                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto*6.91);
-                        clientes[numeroCliente].getCuentas()[posicionA].abonar(monto);
+                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                        clientes[numeroCliente].getCuentas()[posicionA].abonar(monto/6.91);
                         crearExtractoParaClientes(clientes[numeroCliente].getCuentas()[posicionA].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto,fecha, numeroCliente, posicionD,posicionA);
                     }
                 }else{
                     if(clientes[numeroCliente].getCuentas()[posicionD].isMoneda()){
-                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto/6.91);
-                        clientes[numeroCliente].getCuentas()[posicionA].abonar(monto);
+                        clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
+                        clientes[numeroCliente].getCuentas()[posicionA].abonar(monto*6.91);
                         crearExtractoParaClientes(clientes[numeroCliente].getCuentas()[posicionA].getNumeroDeCuenta(), clientes[numeroCliente].getCuentas()[posicionD].getNumeroDeCuenta(), monto,fecha, numeroCliente, posicionD,posicionA);
                     }else{
                         clientes[numeroCliente].getCuentas()[posicionD].debitar(monto);
