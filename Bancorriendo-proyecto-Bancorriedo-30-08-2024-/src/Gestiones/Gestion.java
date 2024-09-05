@@ -664,7 +664,7 @@ public class Gestion {
                 }
             }
             if(!pase1){
-                System.out.println("Numero de cuenta no reconocido!");
+                System.out.println("Error al realizar la transaccion!");
             }
         }else{
             System.out.println("No hay cuentas!");
