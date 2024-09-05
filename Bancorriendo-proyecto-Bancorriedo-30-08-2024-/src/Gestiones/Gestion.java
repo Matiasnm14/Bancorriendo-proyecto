@@ -637,10 +637,14 @@ public class Gestion {
                         if(clientes[numeroCliente].getCuentas()[i].isTipoCuenta()){
                             if(clientes[numeroCliente].getCuentas()[i].isMoneda()){
                                 clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto()/6.91);
+                                System.out.println("Servicio pagado!");
+                                servicios[posicion].getDeudas()[0].setMonto(0);
                                 pase1 = true;
                                 crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto()/6.91, fecha, i);
                             }else{
                                 clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto());
+                                System.out.println("Servicio pagado!");
+                                servicios[posicion].getDeudas()[0].setMonto(0);
                                 pase1 = true;
                                 crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto(), fecha, i);
                             }
@@ -648,12 +652,14 @@ public class Gestion {
                             if(clientes[numeroCliente].getCuentas()[i].isMoneda()){
                                 if(clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto()/6.91)){
                                     System.out.println("Servicio pagado!");
+                                    servicios[posicion].getDeudas()[0].setMonto(0);
                                     pase1 = true;
                                     crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto()/ 6.91, fecha, i);
                                 }
                             }else{
                                 if(clientes[numeroCliente].getCuentas()[i].debitar(servicios[posicion].getDeudas()[0].getMonto())){
                                     System.out.println("Servicio pagado!");
+                                    servicios[posicion].getDeudas()[0].setMonto(0);
                                     pase1 = true;
                                     crearExtracto(mensaje, clientes[numeroCliente].getCuentas()[i].getNumeroDeCuenta(), servicios[posicion].getDeudas()[0].getMonto(), fecha, i);
                                 }
